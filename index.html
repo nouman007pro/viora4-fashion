@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion News</title>
+</head>
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        .card {
+            width: 250px;
+            height: 350px;
+            perspective: 1000px;
+        }
+        .card-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front,
+        .card-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        .card-front {
+            background-color: white;
+        }
+        .card-front img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .card-front h3 {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+        .card-front p {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #777;
+        }
+        .button, .back-btn {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .button:hover, .back-btn:hover {
+            background-color: #0056b3;
+        }
+        .card-back {
+            background-color: #007bff;
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .card-back p {
+            font-size: 16px;
+            padding: 10px;
+        }
+    </style>
+    <div class="container"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const container = document.querySelector(".container");
+            
+            const newsData = [
+    { 
+        "title": "Prada Launches Sustainable Line", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Prada introduces eco-friendly materials in their new collection.", 
+        "details": "Prada’s latest collection emphasizes sustainability with organic fabrics and recycled materials, aiming for a greener fashion future." 
+    },
+    { 
+        "title": "Balenciaga Unveils Oversized Streetwear", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Balenciaga pushes streetwear boundaries with bold silhouettes.", 
+        "details": "The latest Balenciaga line features extreme oversized fits and futuristic streetwear elements, blending comfort with avant-garde style." 
+    },
+    { 
+        "title": "Chanel Brings Back Vintage Elegance", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Chanel reintroduces classic styles with a modern twist.", 
+        "details": "The new Chanel collection revives vintage aesthetics, featuring reimagined tweed suits and pearl embellishments." 
+    },
+    { 
+        "title": "Louis Vuitton Goes Digital", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "LV explores the metaverse with digital fashion pieces.", 
+        "details": "Louis Vuitton releases a collection of NFT-based fashion items, merging high fashion with blockchain technology." 
+    },
+    { 
+        "title": "Dior's Haute Couture Fantasy", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Dior dazzles with a dreamlike haute couture show.", 
+        "details": "The latest Dior show presents ethereal gowns and intricate embroidery, drawing inspiration from fantasy and mythology." 
+    },
+    { 
+        "title": "Versace Embraces Neon Trends", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Versace introduces vibrant neon hues for bold fashion lovers.", 
+        "details": "The new Versace collection features striking neon colors, leather ensembles, and daring patterns, making a strong statement." 
+    },
+    { 
+        "title": "YSL Debuts Sleek Monochrome Looks", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "YSL focuses on black-and-white sophistication this season.", 
+        "details": "Saint Laurent’s latest collection embraces minimalism with sleek, monochrome outfits and sharp tailoring." 
+    },
+    { 
+        "title": "Burberry's Rainproof Revolution", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Burberry reinvents raincoats with futuristic waterproof tech.", 
+        "details": "The iconic trench coat gets a high-tech upgrade with self-drying and temperature-regulating materials." 
+    },
+    { 
+        "title": "Alexander McQueen's Gothic Revival", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "McQueen’s latest collection pays homage to dark romance.", 
+        "details": "Alexander McQueen presents gothic-inspired couture with intricate lace, structured corsets, and dramatic silhouettes." 
+    },
+    { 
+        "title": "Fendi Redefines Power Dressing", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Fendi’s new line elevates office wear with bold cuts.", 
+        "details": "Fendi reinvents power dressing with structured blazers, sharp tailoring, and futuristic accessories." 
+    },
+    { 
+        "title": "Tom Ford's Luxe Leather Statement", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Tom Ford highlights leather in his new luxury collection.", 
+        "details": "The collection features head-to-toe leather outfits, combining edgy designs with classic luxury elements." 
+    },
+    { 
+        "title": "Bottega Veneta's Texture Extravaganza", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Bottega Veneta experiments with textures in new collection.", 
+        "details": "From woven leathers to 3D knits, Bottega Veneta plays with textures to create a visually striking collection." 
+    },
+    { 
+        "title": "Valentino’s Romantic Ruffles", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Valentino brings romance back with flowing ruffles.", 
+        "details": "The latest collection features soft ruffles, pastel hues, and delicate chiffon, exuding timeless elegance." 
+    },
+    { 
+        "title": "Givenchy’s Edgy Street Luxe", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Givenchy blurs the lines between luxury and street style.", 
+        "details": "Givenchy’s newest collection features bold logos, oversized silhouettes, and statement accessories." 
+    },
+    { 
+        "title": "Off-White Pays Tribute to Virgil Abloh", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Off-White’s latest drop honors the late Virgil Abloh.", 
+        "details": "The collection features designs inspired by Abloh’s vision, incorporating his signature streetwear-meets-couture aesthetic." 
+    },
+    { 
+        "title": "Marc Jacobs Introduces Futuristic Footwear", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Marc Jacobs’ latest footwear collection is a sci-fi dream.", 
+        "details": "The collection features bold metallic designs, platform silhouettes, and LED-lit soles, redefining futuristic fashion." 
+    },
+    { 
+        "title": "Stella McCartney’s Vegan Leather Collection", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Stella McCartney champions cruelty-free fashion with her new line.", 
+        "details": "The collection showcases innovative vegan leather materials, proving that sustainability and luxury can coexist." 
+    },
+    { 
+        "title": "Rick Owens' Avant-Garde Silhouettes", 
+        "image": "https://via.placeholder.com/250x150", 
+        "shortDescription": "Rick Owens continues to push the boundaries of fashion.", 
+        "details": "His latest collection features sculptural designs, unconventional materials, and a futuristic vision." 
+    }
+]
+
+            
+            for (let i = 0; i < 18; i++) {
+                const news = newsData[i % newsData.length];
+                const card = document.createElement("div");
+                card.classList.add("card");
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img src="${news.image}" alt="Image ${i + 1}">
+                            <h3>${news.title}</h3>
+                            <p>${news.shortDescription}</p>
+                            <button class="button">View Details</button>
+                        </div>
+                        <div class="card-back">
+                            <p>${news.details}</p>
+                            <button class="back-btn">Back</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+                card.querySelector(".button").addEventListener("click", function() {
+                    card.classList.add("flipped");
+                });
+                card.querySelector(".back-btn").addEventListener("click", function() {
+                    card.classList.remove("flipped");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
